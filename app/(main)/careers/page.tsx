@@ -4,8 +4,7 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Careers | DeliverySwift",
-  description:
-    "Find here our recent jobs.",
+  description: "Find here our recent jobs.",
 };
 function CareersPage() {
   return (

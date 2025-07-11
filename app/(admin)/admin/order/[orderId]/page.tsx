@@ -1,8 +1,12 @@
 import React from "react";
 import { EditOrder, OrderDetailsCTA } from "@/components/index";
 
-async function OrderDetails({ params }: { params: Promise<{ orderId: string }> }) {
- const { orderId } = await params 
+async function OrderDetails({
+  params,
+}: {
+  params: Promise<{ orderId: string }>;
+}) {
+  const { orderId } = await params;
   const order = {
     orderId: 1232,
     RecieverName: "John Duo",
@@ -63,8 +67,8 @@ async function OrderDetails({ params }: { params: Promise<{ orderId: string }> }
           <p className="text-neutral-600">Status:</p>
           <p className="text-green-600">{order.status}</p>
         </div>
-        <OrderDetailsCTA orderId= { orderId} />
-       
+        <OrderDetailsCTA orderId={orderId} />
+
         <EditOrder orderId={orderId} />
       </section>
     </div>

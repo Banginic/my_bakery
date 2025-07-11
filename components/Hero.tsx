@@ -1,7 +1,7 @@
 import { Package, Truck, Clock } from "lucide-react";
 import { heroImage } from "@/assets/photo";
 import Image from "next/image";
-import {HeroCTA} from "@/components/index";
+import { HeroCTA } from "@/components/index";
 
 const Hero = () => {
   return (
