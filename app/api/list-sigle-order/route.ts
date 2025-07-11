@@ -1,0 +1,19 @@
+import { NextResponse } from 'next/server';
+import { db } from '@/drizzle/index';
+import { orderTable } from '@/drizzle/schema';
+import { eq } from 'drizzle-orm';
+
+export async function GET(_req: Request, { params}:{  params: { trackingNumber: string}}){
+   const { trackingNumber } = params
+   if(!trackingNumber){
+       return NextResponse.json({ error: 'Please Provide tracking number', success: false}, { status: 400})
+   }
+   const existingOrder = await db.select()
+   .from(orderTable)
+   .where(eq( orderTable.trackingNumber, trackingNumber))
+
+   if(!existingOrder){
+       return NextResponse.json({ success: false, error: 'No Order Found'}, { status: 400 })
+   }
+   return NextResponse.json({ success: true, data: existingOrder }, { status: 200 })
+}
