@@ -1,8 +1,12 @@
 "use client";
-import React, { FormEvent, useState } from "react";
+import React, { FormEvent, useContext, useState } from "react";
 import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
+import { AppContext } from "@/context/AppProvider";
 
 function Login() {
+  const { setUser } = useContext(AppContext)!
+  const router = useRouter()
   const [formState, setFormState] = useState({ error: "", isLoading: false });
   const [formData, setFormData] = useState({ email: "", password: "" });
 
@@ -19,9 +23,12 @@ function Login() {
       const data = await res.json();
       if (data.success) {
         toast.success(data.message);
-        localStorage.setItem("user", data.data);
+        localStorage.setItem("user", JSON.stringify(data.data));
         localStorage.setItem("token", data.token);
-        return { email: "", password: "" };
+        setUser(data.data)
+        setFormState({ error: '', isLoading: false });
+         setFormData({ email: "", password: "" })
+         router.push('/admin/order')
       }
       setFormState({ error: data.error, isLoading: false });
     } catch (ex: unknown) {
@@ -29,9 +36,7 @@ function Login() {
         setFormState({ isLoading: false, error: ex.message });
       }
       setFormState({ isLoading: false, error: "Error occured logging in." });
-    } finally {
-      setFormState({ ...formState, isLoading: false });
-    }
+    } 
   }
 
   return (
@@ -58,7 +63,7 @@ function Login() {
             className="border border-gray-300 rounded px-4 py-2 w-full"
             placeholder="your@email.com"
             required
-            maxLength={20}
+            maxLength={30}
           />
         </div>
         <div className="mb-4">

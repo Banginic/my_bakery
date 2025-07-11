@@ -16,8 +16,8 @@ export async  function POST(req: Request){
     .from(adminTable)
     .where(eq(adminTable.email, email))
     .limit(1)
-    if(existInDB && existInDB.length > 1){
-        return NextResponse.json({ error: 'User Already Exist'}, { status: 400})
+    if(existInDB.length === 1){
+        return NextResponse.json({success: false, error: 'User Already Exist'}, { status: 400})
     }
     const newPassword = await hashPassword(password)
     if(!newPassword){
@@ -25,7 +25,7 @@ export async  function POST(req: Request){
     }
     const isAdmin = email === process.env.ADMIN_EMAIL!
     const admin = await db.insert(adminTable)
-    .values({name, email, password:newPassword, isAdmin} )
+    .values({name, email, password:newPassword, isAdmin } )
 
     const token = await generateToken({ email})
 

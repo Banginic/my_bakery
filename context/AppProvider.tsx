@@ -1,5 +1,5 @@
 "use client";
-import React, { createContext, useState } from "react";
+import React, { createContext, useEffect, useState } from "react";
 
 type UserType = {
   name: string;
@@ -25,7 +25,20 @@ function AppProvider({ children }: { children: React.ReactNode }) {
   const [showEditOrder, setEditOrder] = useState(false);
   const [user, setUser] = useState<UserType | null>(null);
 
-  console.log(adminSidebar);
+ useEffect(() => {
+  
+  function seedUser(){
+    const userString = localStorage.getItem('user');
+    const storedUser = userString ? JSON.parse(userString) : null;
+    if(storedUser){
+      setUser(storedUser)
+    }
+  }
+
+  seedUser()
+  return () =>{}
+ },[])
+
   const values = {
     showSidebar,
     setSidebar,

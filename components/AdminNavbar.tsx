@@ -6,15 +6,17 @@ import { AppContext } from "@/context/AppProvider";
 import Link from "next/link";
 
 function AdminNavbar() {
-  const { adminSidebar, setAdminSidebar } = useContext(AppContext)!;
+  const { adminSidebar, setAdminSidebar, user } = useContext(AppContext)!;
   return (
-    <header className="h-[13dvh] flex lg:py-8 items-center relative bg-gradient-to-t from-yellow-50 to-yellow-50/50">
-      <nav className="flex items-center justify-between px-6 lg:justify-around w-full">
+    <header className="h-[13dvh] lg:h-[17dvh]  flex lg:py-8 items-center relative bg-gradient-to-t from-yellow-50 to-yellow-50/50">
+      <nav className={`flex items-center justify-between px-6 ${!user ? 'lg:px-24' : 'lg:justify-around'} w-full`}>
         <Link href={"/admin"}>
           <Logo />
         </Link>
-        <Navlinks navlinks={adminNavlinks} />
-        <div className="flex items-center gap-4">
+        <div className={`${!user && 'hidden'}`}>
+          <Navlinks navlinks={adminNavlinks} />
+        </div>
+        <div className={`${!user ? "hidden" : "flex"}  items-center gap-4`}>
           <Hamburger
             isSidebarOpen={adminSidebar}
             setSidebar={setAdminSidebar}

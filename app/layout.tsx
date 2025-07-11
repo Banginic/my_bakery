@@ -17,7 +17,7 @@ export default function RootLayout({
     <html lang="en">
       <body className="relative">
         <ToastContainer />
-        <body className="bg-yellow-50/30">{children}</body>
+        <main className="bg-yellow-50/30">{children}</main>
       </body>
     </html>
   );

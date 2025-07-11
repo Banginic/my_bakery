@@ -4,7 +4,11 @@ import { toast } from "react-toastify";
 
 function Signup() {
   const [formState, setFormState] = useState({ error: "", isLoading: false });
-  const [formData, setFormData] = useState({ name: '', email: "", password: "" });
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+  });
 
   async function handleSubmit(event: FormEvent) {
     event.preventDefault();
@@ -21,7 +25,8 @@ function Signup() {
         toast.success(data.message);
         localStorage.setItem("user", data.data);
         localStorage.setItem("token", data.token);
-        return { name: '', email: "", password: "" };
+         setFormState({ isLoading: false, error: "" })
+        return setFormData({ name: "", email: "", password: "" });
       }
       setFormState({ error: data.error, isLoading: false });
     } catch (ex: unknown) {
@@ -29,8 +34,6 @@ function Signup() {
         setFormState({ isLoading: false, error: ex.message });
       }
       setFormState({ isLoading: false, error: "Error occured signing up." });
-    } finally {
-      setFormState({ ...formState, isLoading: false });
     }
   }
 
@@ -50,11 +53,9 @@ function Signup() {
           <input
             type="text"
             autoComplete="name"
-            id="email"
+            id="name"
             value={formData.name}
-            onChange={(e) =>
-              setFormData({ ...formData, name: e.target.value })
-            }
+            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
             className="border border-gray-300 rounded px-4 py-2 w-full"
             placeholder="John Smith"
             required
@@ -76,7 +77,7 @@ function Signup() {
             className="border border-gray-300 rounded px-4 py-2 w-full"
             placeholder="your@email.com"
             required
-            maxLength={20}
+            maxLength={30}
           />
         </div>
         <div className="mb-4">

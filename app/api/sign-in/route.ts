@@ -31,6 +31,7 @@ export async function POST(req: Request) {
   }
 
   const isPasswordValid = await comparePassword(password, user[0].password);
+
   if (!isPasswordValid) {
     return NextResponse.json(
       { error: "Invalid email or password", success: false },
@@ -38,7 +39,7 @@ export async function POST(req: Request) {
     );
   }
 
-  const token = await generateToken({ email });
+  const token = await generateToken({ email, isAdmin: user[0].isAdmin });
   const cookieStore = await cookies();
   cookieStore.set('token', token, {
     httpOnly: true,
