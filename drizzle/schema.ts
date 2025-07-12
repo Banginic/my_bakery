@@ -10,10 +10,11 @@ export const orderTable = pgTable('order_table',{
     refund: boolean('refund').notNull().default(false),
     status: varchar('status').notNull().default('Delivering'),
     amount: integer('amount').notNull().default(0),
-    parckageWeight: integer('parckage_weight').notNull().default(0),
+    packageWeight: integer('package_weight').notNull().default(0),
     sendingCountry: varchar('sending_country',{ length: 50}).notNull(),
-    locations: jsonb('locations').$type<Array<string>>().notNull(),
-    trackingNumber: varchar('tacking_number').notNull(),
+    locations: jsonb('locations').notNull(),
+    trackingNumber: varchar('tracking_number').notNull(),
+    paymentMethod: varchar('payment_method').notNull(),
     createdAt: timestamp('created_at').defaultNow().notNull(),
     updatedAt: timestamp('updated_at').notNull().defaultNow()
 });

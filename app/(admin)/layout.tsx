@@ -2,16 +2,21 @@
 import AppProvider from "@/context/AppProvider";
 import React from "react";
 import { AdminNavbar, AdminFooter } from "@/components/index";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+export const queryClient = new QueryClient();
 
 function AdminLayout({ children }: { children: React.ReactNode }) {
   return (
     <div>
       <AppProvider>
-        <div className=" relative bg-gradient-to-b from-yellow-50 to-gray-50">
-          <AdminNavbar />
-          {children}
-          <AdminFooter />
-        </div>
+        <QueryClientProvider client={queryClient}>
+          <div className=" relative bg-gradient-to-b from-yellow-50 to-gray-50">
+            <AdminNavbar />
+            {children}
+            <AdminFooter />
+          </div>
+        </QueryClientProvider>
       </AppProvider>
     </div>
   );

@@ -1,31 +1,39 @@
+"use client";
 import React from "react";
 import { EditOrder, OrderDetailsCTA } from "@/components/index";
+import useOrderQuery from "@/hooks/useQuery";
 
-async function OrderDetails({
-  params,
-}: {
-  params: Promise<{ orderId: string }>;
-}) {
-  const { orderId } = await params;
-  const order = {
-    orderId: 1232,
-    RecieverName: "John Duo",
-    phone: "+1 233 42232",
-    paymentMethod: "Visa",
-    email: "example@email.com",
-    address: "1233, White bare Lake",
-    country: "USA",
-    paymentDetails: "**** **** **34 1042",
-    refund: "Pending",
-    shippingDate: "07-23-2025",
-    ref: "DS-2323",
-    currentLocation: [
-      { location: "DLA, Airport", date: "23-07-2025" },
-      { location: "Paris, Airport Customs", date: "23-07-2025" },
-      { location: "Dallas Int airport Custom, Airport", date: "23-07-2025" },
-    ],
-    status: "Delivering",
-  };
+function OrderDetails({ params }: { params: Promise<{ orderId: string }> }) {
+  const orderParams = React.use(params);
+  const { orderId } = orderParams;
+
+  const { data, isLoading, isError } = useOrderQuery(orderId);
+  console.log("Order Data:", data);
+
+  if (isLoading)
+    return (
+      <div className="h-screen grid place-items-center">
+        <p className="animate-pulse text-3xl text-yellow-800 font-bold">
+          Loading...
+        </p>
+      </div>
+    );
+  if (isError)
+    return (
+      <div className="text-red-600 h-screen grid place-items-center">
+        Error loading orders
+      </div>
+    );
+
+  if (!data || !data.data || data.data.length === 0) {
+    return (
+      <div className="h-screen grid place-items-center">
+        <p className="text-3xl text-red-600 font-bold">
+          No Order Found with this ID
+        </p>
+      </div>
+    );
+  }
   return (
     <div className="min-h-[70dvh] bg-gradient-to-b max-w-3xl mx-auto from-yellow-50 to-gray-50 p-4">
       <h1 className=" text-xl lg:text-3xl font-bold text-center p-2">
@@ -33,39 +41,67 @@ async function OrderDetails({
       </h1>
       <section className="border border-gray-300 p-4 rounded">
         <p className="text-lg pb-4">
-          Order Ref: <span className="underline">{"DS-0235454235"}</span>
+          Order Ref:{" "}
+          <span className="underline">{data?.data[0].trackingNumber}</span>
         </p>
         <div className="flex items-center gap-4">
           <p className="text-neutral-600">Name:</p>
-          <p>{order.RecieverName}</p>
+          <p>{data?.data[0].name}</p>
         </div>
         <div className="flex items-center gap-4">
           <p className="text-neutral-600">Email:</p>
-          <p>{order.email}</p>
+          <p>{data?.data[0].email}</p>
         </div>
         <div className="flex items-center gap-4">
           <p className="text-neutral-600">phone:</p>
-          <p>{order.phone}</p>
+          <p>{data?.data[0].phone}</p>
         </div>
         <div className="flex items-center gap-4">
           <p className="text-neutral-600">Address:</p>
-          <p>{order.address}</p>
+          <p>{data?.data[0].address}</p>
         </div>
         <div className="flex items-center gap-4">
           <p className="text-neutral-600">Country:</p>
-          <p>{order.country}</p>
+          <p>{data?.data[0].sendingCountry}</p>
         </div>
-        <div className="flex items-center gap-4">
-          <p className="text-neutral-600">Payment details:</p>
-          <p>{order.paymentDetails}</p>
-        </div>
+
         <div className="flex items-center gap-4">
           <p className="text-neutral-600">Payment Method:</p>
-          <p>{order.paymentMethod}</p>
+          <p>{data?.data[0].paymentMethod}</p>
+        </div>
+        <div className="flex items-center gap-4">
+          <p className="text-neutral-600">Weight:</p>
+          <p>{data?.data[0].packageWeight}Kg</p>
+        </div>
+        <div className="flex items-center gap-4">
+          <p className="text-neutral-600">Amount:</p>
+          <p>${data?.data[0].amount.toFixed(2)}</p>
+        </div>
+        <div className="flex items-center gap-4">
+          <p className="text-neutral-600">Sending Country:</p>
+          <p>{data?.data[0].sendingCountry}</p>
         </div>
         <div className="flex items-center gap-4">
           <p className="text-neutral-600">Status:</p>
-          <p className="text-green-600">{order.status}</p>
+          <p className="text-green-600">{data?.data[0].status}</p>
+        </div>
+        <div className=" bg-green-50 p-4 rounded border border-green-200 mt-4">
+          <p className="text-green-600 mb-3">Order location:</p>
+           <div>
+            <p className="text-green-800">
+              {
+              data?.data[0].locations &&  data?.data[0]?.locations.map((location) => (
+                  <article key={location.place}>
+                    <p>{location.place}</p>
+                    <p className="text-xs">{new Date(location.time).toLocaleTimeString()}</p>
+                    <div className="min-h-6 border w-1 bg-gray-700 rounded"></div>
+            
+                  </article>
+                ))
+                 
+              }
+            </p>
+           </div>
         </div>
         <OrderDetailsCTA orderId={orderId} />
 

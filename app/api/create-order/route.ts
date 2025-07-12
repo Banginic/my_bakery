@@ -4,7 +4,7 @@ import { orderTable } from "@/drizzle/schema";
 import { generateSecureEightDigitString } from "@/lib/generateEightNumber";
 import { db } from "@/drizzle/index";
 
-export async function Post(req: Request) {
+export async function POST(req: Request) {
   const body = await req.json();
   const {
     name,
@@ -13,10 +13,11 @@ export async function Post(req: Request) {
     address,
     receivingCountry,
     amount,
-    parckageWeight,
+    packageWeight,
     sendingCountry,
     locations,
-    trackingNumber,
+    paymentMethod
+   
   } = body;
   if (
     !name ||
@@ -25,10 +26,11 @@ export async function Post(req: Request) {
     !address ||
     !receivingCountry ||
     !amount ||
-    !parckageWeight ||
+    !packageWeight ||
     !sendingCountry ||
     !locations ||
-    !trackingNumber
+    !paymentMethod
+ 
   ) {
     return NextResponse.json(
       { error: "All fields are required", success: false },
@@ -36,7 +38,7 @@ export async function Post(req: Request) {
     );
   }
   const orderRef = "DS" + `${generateSecureEightDigitString()}`;
-
+const newLocation = [locations]
   const existRef = await db
     .select()
     .from(orderTable)
@@ -50,8 +52,8 @@ export async function Post(req: Request) {
   }
   const order = await db.insert(orderTable).values({
     name, email, phone, address,
-     receivingCountry, amount, parckageWeight, sendingCountry,
-     locations, trackingNumber: orderRef, updatedAt: new Date()
+     receivingCountry, amount, packageWeight, paymentMethod, sendingCountry,
+     locations: newLocation, trackingNumber: orderRef, updatedAt: new Date()
   })
  
   return NextResponse.json({ success: true, message: 'Order created successfully', data:order}, { status: 201})

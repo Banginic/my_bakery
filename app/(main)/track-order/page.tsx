@@ -1,40 +1,48 @@
 "use client";
 
+import { useMutation } from "@tanstack/react-query";
+
 import React, { FormEvent, useState } from "react";
+import { toast } from "react-toastify";
 
-function TrackOrder() {
-  const order = {
-    orderId: 1232,
-    RecieverName: "John Duo",
-    phone: "+1 233 42232",
-    paymentMethod: "Visa",
-    email: "example@email.com",
-    address: "1233, White bare Lake",
-    country: "USA",
-    cardDetails: '**** **** **34 1042',
-    refund:'Pending',
-    shippingDate: "07-23-2025",
-    ref: "DS-2323",
-    currentLocation: [
-      { location: "DLA, Airport", date: "23-07-2025" },
-      { location: "Paris, Airport Customs", date: "23-07-2025" },
-      { location: "Dallas Int airport Custom, Airport", date: "23-07-2025" },
-    ],
-    status: "Delivering",
-  };
-
+function OrderDetails() {
   const [formState, setFormState] = useState({ error: "", isLoading: false });
   const [trackingNumber, setTrackingNumber] = useState("");
 
+  const { data, isPending, isError, mutate } = useMutation({
+    mutationFn: async () => {
+      const response = await fetch(
+        `/api/list-single-order?orderId=${trackingNumber}`,
+        {
+          method: "GET",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      return response.json();
+    },
+    onSuccess: () => {
+      toast.success("Order details fetched successfully");
+      setFormState({ error: "", isLoading: false });
+    },
+    onError: (error) => {
+      setFormState({ error: error.message, isLoading: false });
+    },
+  });
+
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
-    setFormState({ error: "", isLoading: true });
+    mutate();
   }
   return (
-    <div className="min-h-[70dvh]">
-      <h1 className="text-3xl font-bold text-center my-4">
-        Track Your <span className="text-yellow-500 ">Order</span>
+    <div className="min-h-[70dvh] bg-gradient-to-b max-w-3xl mx-auto from-yellow-50 to-gray-50 p-4">
+      <h1 className=" text-xl lg:text-3xl font-bold text-center p-2">
+        Order <span className="text-yellow-500">Details</span>
       </h1>
+      {/* Form */}
       <div className="w-[90%] lg:w-md mt-8 border mx-auto border-gray-300 p-4 rounded">
         <form onSubmit={handleSubmit}>
           <label htmlFor="trackingNumber" className="text-gray-600 block">
@@ -60,67 +68,103 @@ function TrackOrder() {
           </button>
         </form>
       </div>
+      ;
+      {isPending && (
+        <div className="h-[50dvh] grid place-items-center">
+          <p className="animate-pulse text-3xl text-yellow-800 font-bold">
+            Loading...
+          </p>
+        </div>
+      )}
+      {isError && (
+        <div className="text-red-600 h-[50dvh] grid place-items-center">
+          Error loading orders
+        </div>
+      )}
+      {!isPending &&
+      !isError &&
+      (!data || !data.data || data.data.length === 0) ? (
+        <div className="h-[50dvh] grid place-items-center">
+          <p className="text-2xl text-gray-800-600 font-bold">
+            Please enter a valid tracking number
+          </p>
+        </div>
+      ) : (
+        <section className="border border-gray-300 p-4 rounded">
+          <p className="text-lg pb-4">
+            Order Ref:{" "}
+            <span className="underline">{data?.data[0].trackingNumber}</span>
+          </p>
+          <div className="flex items-center gap-4">
+            <p className="text-neutral-600">Name:</p>
+            <p>{data?.data[0].name}</p>
+          </div>
+          <div className="flex items-center gap-4">
+            <p className="text-neutral-600">Email:</p>
+            <p>{data?.data[0].email}</p>
+          </div>
+          <div className="flex items-center gap-4">
+            <p className="text-neutral-600">phone:</p>
+            <p>{data?.data[0].phone}</p>
+          </div>
+          <div className="flex items-center gap-4">
+            <p className="text-neutral-600">Address:</p>
+            <p>{data?.data[0].address}</p>
+          </div>
+          <div className="flex items-center gap-4">
+            <p className="text-neutral-600">Country:</p>
+            <p>{data?.data[0].sendingCountry}</p>
+          </div>
 
-      <section className="my-12">
-        {/* <div className="text-center">
-          <h2 className="text-xl font-bold">No Order Found</h2>
-          <p className="text-gray-600">Please try again Later</p>
-        </div> */}
-        <article className="border border-gray-300 rounded p-2 w-[90%] lg:w-md mx-auto">
-          <div className="bg-gray-100 p-4 rounded">
-            <div className="flex items-center gap-4 text-lg">
-              <p className="text-gray-600">Order Reference:</p>
-              <p className="">{order.ref}</p>
-            </div>
-            <div className="flex items-center gap-4 my-2">
-              <p className="text-gray-600">Reciever&apos;s name:</p>
-              <p>{order.RecieverName}</p>
-            </div>
-            <div className="flex items-center gap-4 my-2">
-              <p className="text-gray-600">Reciever&apos;s email:</p>
-              <p>{order.email}</p>
-            </div>
-            <div className="flex items-center gap-4 my-2">
-              <p className="text-gray-600">Reciever&apos;s phone:</p>
-              <p>{order.phone}</p>
-            </div>
-            <div className="flex items-center gap-4 my-2">
-              <p className="text-gray-600">Reciever&apos;s address:</p>
-              <p>
-                {order.address} {order.country}
+          <div className="flex items-center gap-4">
+            <p className="text-neutral-600">Payment Method:</p>
+            <p>{data?.data[0].paymentMethod}</p>
+          </div>
+          <div className="flex items-center gap-4">
+            <p className="text-neutral-600">Weight:</p>
+            <p>{data?.data[0].packageWeight}Kg</p>
+          </div>
+          <div className="flex items-center gap-4">
+            <p className="text-neutral-600">Amount:</p>
+            <p>${data?.data[0].amount.toFixed(2)}</p>
+          </div>
+          <div className="flex items-center gap-4">
+            <p className="text-neutral-600">Sending Country:</p>
+            <p>{data?.data[0].sendingCountry}</p>
+          </div>
+          <div className="flex items-center gap-4">
+            <p className="text-neutral-600">Status:</p>
+            <p className="text-green-600">{data?.data[0].status}</p>
+          </div>
+          <div className=" bg-green-50 p-4 rounded border border-green-200 mt-4">
+            <p className="text-green-600 mb-3">Order location:</p>
+            <div>
+              <p className="text-green-800">
+                {data?.data[0].locations &&
+                  data?.data[0]?.locations.map(
+                    (location: { place: string; time: Date }) => (
+                      <article key={location.place}>
+                        <p>{location.place}</p>
+                        <p className="text-xs">
+                          {new Date(location.time).toLocaleTimeString()}
+                        </p>
+                        <div className="min-h-6 border w-1 bg-gray-700 rounded"></div>
+                      </article>
+                    )
+                  )}
               </p>
             </div>
           </div>
-          <div className="mt-8 p-4 bg-white">
-            <div className="flex items-center gap-4">
-              <p className="text-gray-600">Order status</p>
-              <p className="text-green-500">{order.status}</p>
-            </div>
-            <div className="flex items-center gap-4">
-              <p className="text-gray-600">Shipping date</p>
-              <p className="">{order.shippingDate}</p>
-            </div>
-            <div className="flex items-center gap-4 border rounded p-2 border-gray-300">
-              <p className="text-gray-600 block">Order current location</p>
-              <div>
-                {order.currentLocation.map((location) => (
-                  <div key={location.location}>
-                    <div className={`mx-auto text-gray-700  text-sm`}>
-                      {location.location}
-                    </div>
-                    <div className="min-h-6 w-0.5 rounded  border"></div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-          <button className="border py-2 px-4  rounded flex mx-auto text-red-500 hover:bg-red-100 cursor-pointer">
+          <button
+            onClick={() => toast.warn("Sent order cancellation request.")}
+            className="px-4 py-2 rounded my-1 mt-4 bg-red-100 text-red-900 hover:bg-red-200 cursor-pointer"
+          >
             Cancel Order
           </button>
-        </article>
-      </section>
+        </section>
+      )}
     </div>
   );
 }
 
-export default TrackOrder;
+export default OrderDetails;
