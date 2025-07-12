@@ -3,15 +3,43 @@ import React, { FormEvent, useContext, useState } from "react";
 import { close } from "@/assets/photo";
 import Image from "next/image";
 import { AppContext } from "@/context/AppProvider";
+import { useMutation } from "@tanstack/react-query";
+import { queryClient } from "@/app/(admin)/layout";
+import { toast } from "react-toastify";
 
 function EditOrder({ orderId }: { orderId: string }) {
   const { setEditOrder, showEditOrder } = useContext(AppContext)!;
   const [formState, setFormState] = useState({ error: "", isLoading: false });
-  const [formData, setFormData] = useState({ location: "", time: "" });
+  const [formData, setFormData] = useState({ location: "", time: new Date() });
+
+  async function addTransit() {
+    const res = await fetch(`/api/edit-order?trackingNumber=${orderId}`, {
+      method: "PUT",
+      body: JSON.stringify(formData),
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+    });
+
+    return res.json();
+  }
+  const { isPending, mutate } = useMutation({
+    mutationFn: addTransit,
+    onError: (error: Error) => {
+      setFormState({ error: error.message, isLoading: false });
+    },
+    onSuccess: (data) => {
+      setFormData({ location: "", time: new Date() });
+      queryClient.invalidateQueries({ queryKey: [`order-${orderId}`] });
+      toast.success(data.message);
+      setEditOrder(false);
+    },
+  });
 
   async function handleSumbit(event: FormEvent) {
     event.preventDefault();
-    setFormState({ error: "", isLoading: true });
+    mutate();
   }
   return (
     <div
@@ -55,15 +83,17 @@ function EditOrder({ orderId }: { orderId: string }) {
           <input
             type="time"
             id="time"
-            value={formData.time}
-            onChange={(e) => setFormData({ ...formData, time: e.target.value })}
+            value={formData.time.toISOString().substring(11, 16)}
+            onChange={(e) =>
+              setFormData({ ...formData, time: new Date(`1970-01-01T${e.target.value}:00`) })
+            }
             className="border border-gray-300 px-4 py-2 rounded w-full"
             placeholder="Atlanta airport custom"
           />
         </div>
         <button
           type="submit"
-          disabled={formState.isLoading}
+          disabled={isPending}
           className="bg-black px-4 py-2.5 disabled:bg-black/60 rounded text-yellow-300 w-full cursor-pointer hover:bg-black/80"
         >
           {formState.isLoading ? (

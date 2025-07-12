@@ -3,8 +3,10 @@ import React, { ChangeEvent, FormEvent, useState } from "react";
 import { toast } from "react-toastify";
 import { useMutation } from "@tanstack/react-query";
 import { queryClient } from "../../layout";
+import { useRouter } from "next/navigation";
 
 function AddOrder() {
+  const router = useRouter();
   const [formState, setFormState] = useState({ error: "", isLoading: false });
   const [formData, setFormData] = useState({
     name: "",
@@ -65,6 +67,7 @@ function AddOrder() {
       queryClient.invalidateQueries({
         queryKey: ["orders"],
       });
+      router.push("/admin/order");
     },
   });
   async function handleSumbit(event: FormEvent) {

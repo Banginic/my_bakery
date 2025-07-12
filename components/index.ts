@@ -16,6 +16,7 @@ export { default as ContactForm } from './ContactForm'
 export { default as Newsletters } from './Newsletter'
 export { default as SocialLinks } from './SocialLinks'
 export { default as ContactCard } from './ContactCard'
+export { default as Testimonial } from './Testimonial';
 export { default as FormRefund } from './FormRefund'
 
 // Admin

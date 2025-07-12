@@ -14,11 +14,11 @@ function Orders() {
     queryKey: ["orders"],
     queryFn: fetchOrders,
   });
-
+console.log(data);
   if (isLoading)
     return (
-      <div className="h-screen grid place-items-center">
-        <p className="animate-pulse text-3xl text-yellow-800 font-bold">
+      <div className="h-[75dvh] grid place-items-center">
+        <p className="animate-pulse text-3xl text-green-800 font-bold">
           Loading...
         </p>
       </div>
@@ -38,10 +38,14 @@ function Orders() {
           Add order
         </Link>
         <article className="border rounded border-gray-300 p-4 mt-4">
-          {/* <div className="h-full w-full">
-                  <h2 className="text-center font-bold text-lg">No Available Order</h2>
-            </div> */}
-          <div>
+          {data?.data?.length === 0 ? (
+            <div className="h-full w-full">
+              <h2 className="text-center font-bold text-lg">
+                No Order Available
+              </h2>
+            </div>
+          ) : (
+            <div>
             {data?.data?.map((item) => (
               <Link
                 href={`/admin/order/${item.trackingNumber}`}
@@ -62,6 +66,8 @@ function Orders() {
               </Link>
             ))}
           </div>
+          )}
+          
         </article>
       </section>
     </div>

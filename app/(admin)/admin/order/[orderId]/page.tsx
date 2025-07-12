@@ -35,7 +35,7 @@ function OrderDetails({ params }: { params: Promise<{ orderId: string }> }) {
     );
   }
   return (
-    <div className="min-h-[70dvh] bg-gradient-to-b max-w-3xl mx-auto from-yellow-50 to-gray-50 p-4">
+    <div className="min-h-[75dvh] bg-gradient-to-b max-w-3xl mx-auto from-yellow-50 to-gray-50 p-4">
       <h1 className=" text-xl lg:text-3xl font-bold text-center p-2">
         Order <span className="text-yellow-500">Details</span>
       </h1>

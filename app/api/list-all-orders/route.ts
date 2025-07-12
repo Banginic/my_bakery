@@ -8,7 +8,7 @@ export async function GET() {
     .from(orderTable);
  
     if(orders.length === 0){
-        return NextResponse.json({ success: true, message: 'No Order Available'}, { status: 404})
+        return NextResponse.json({ success: true, message: 'No Order Available', data: []}, { status: 404})
     }
   return NextResponse.json({ success: true, data: orders }, { status: 200 });
 }
