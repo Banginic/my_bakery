@@ -1,8 +1,11 @@
 "use client";
 import { Package } from "lucide-react";
+import { useRouter } from "next/navigation";
 import React, { ChangeEvent, FormEvent, useState } from "react";
+import { toast } from "react-toastify";
 
 function ContactForm() {
+  const router = useRouter();
   const [formState, setFormState] = useState({ error: "", isLoading: false });
   const [formData, setFormData] = useState({
     fullName: "",
@@ -23,6 +26,21 @@ function ContactForm() {
   async function handleSubmit(event: FormEvent) {
     event.preventDefault();
     setFormState({ error: "", isLoading: true });
+    toast.success("Form submitted successfully!");
+    setFormData({
+      fullName: "",
+      email: "",
+      phone: "",
+      pickUpLocation: "",
+      deliveryLocation: "",
+      weight: "",
+      value: "",
+      description: "",
+    });
+    setFormState({ error: "", isLoading: false });
+    setTimeout(() => {
+      router.push("/");
+    }, 3000);
   }
   return (
     <div className="border-0 shadow-elegant bg-white/50">
