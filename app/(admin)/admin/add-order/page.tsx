@@ -75,9 +75,9 @@ function AddOrder() {
     <div className="min-h-screen my-4 grid mt-12 ">
       <form
         onSubmit={handleSumbit}
-        className="border border-gray-300 rounded shadow-sm p-4 text-sm min-w-sm mx-auto"
+        className="border border-gray-300 rounded h-130 shadow-sm p-4 text-sm min-w-sm mx-auto"
       >
-        <h1 className="text-center text-xl lg:text-2xl font-bold mb-4">
+        <h1 className="text-center text-xl lg:text-2xl font-bold mb-4 mt-2">
           Create Order
         </h1>
         <div className="flex gap-2 mb-4">

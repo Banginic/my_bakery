@@ -18,5 +18,5 @@ export async function GET(req: Request) {
    if(!existingOrder){
        return NextResponse.json({ success: false, error: 'No Order Found'}, { status: 400 })
    }
-   return NextResponse.json({ success: true, data: existingOrder }, { status: 200 })
+   return NextResponse.json({ success: true, data: existingOrder, message: 'Order Found' }, { status: 200 })
 }

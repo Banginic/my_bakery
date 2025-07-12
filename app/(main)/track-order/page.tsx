@@ -24,12 +24,18 @@ function OrderDetails() {
 
       return response.json();
     },
-    onSuccess: () => {
-      toast.success("Order details fetched successfully");
+    onSuccess: (data) => {
+      if( data.data.success ) {
+        toast.success(data.data.message);
+
+      }
+      toast.error(data.data.error);
+      setTrackingNumber("");
       setFormState({ error: "", isLoading: false });
     },
     onError: (error) => {
       setFormState({ error: error.message, isLoading: false });
+      
     },
   });
 
@@ -43,7 +49,7 @@ function OrderDetails() {
         Order <span className="text-yellow-500">Details</span>
       </h1>
       {/* Form */}
-      <div className="w-[90%] lg:w-md mt-8 border mx-auto border-gray-300 p-4 rounded">
+      <div className="w-[95%] lg:w-md mt-8 border mx-auto border-gray-300 p-4 rounded">
         <form onSubmit={handleSubmit}>
           <label htmlFor="trackingNumber" className="text-gray-600 block">
             Enter tracking number
@@ -52,13 +58,15 @@ function OrderDetails() {
             type="text"
             value={trackingNumber}
             required
+            maxLength={10}
             onChange={(e) => setTrackingNumber(e.target.value)}
-            className="border py-2 px-4 rounded border-gray-300 "
-            placeholder="DS-0232388434344"
+            className="border py-2 px-4 rounded border-gray-300 w-45 lg:w-62"
+            placeholder="DS00000000"
           />
           <button
             type="submit"
-            className=" bg-black text-white px-4 py-2 rounded cursor-pointer hover:black/80 ml-2"
+            disabled={formState.isLoading}
+            className=" bg-black text-white px-4 py-2 rounded cursor-pointer hover:black/80 ml-3 disabled:bg-black/50 disabled:cursor-not-allowed"
           >
             {formState.isLoading ? (
               <span className="animate-pulse">Tracking ...</span>
@@ -81,11 +89,10 @@ function OrderDetails() {
           Error loading orders
         </div>
       )}
-      {!isPending &&
-      !isError &&
-      (!data || !data.data || data.data.length === 0) ? (
+      {
+      (!data || !data.data || isPending || data.data.length === 0) ? (
         <div className="h-[50dvh] grid place-items-center">
-          <p className="text-2xl text-gray-800-600 font-bold">
+          <p className="text-lg lg:text-2xl text-gray-800-600 font-bold text-center">
             Please enter a valid tracking number
           </p>
         </div>

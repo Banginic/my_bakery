@@ -17,7 +17,7 @@ function useOrderQuery(orderId: string) {
   }
 
   return useQuery({
-    queryKey: [`order - ${orderId}`],
+    queryKey: [`order-${orderId}`],
     queryFn: fetchOrders,
   });
 }

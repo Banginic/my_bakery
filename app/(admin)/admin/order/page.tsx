@@ -33,7 +33,7 @@ function Orders() {
       <section className="max-w-4xl mx-auto">
         <Link
           href={"/admin/add-order"}
-          className="border px-4 py-2 rounded cursor-pointer text-sm border-gray-300 hover:border-black"
+          className="border px-4 py-2 rounded cursor-pointer bg-black text-yellow-300 border-gray-300 hover:border-black"
         >
           Add order
         </Link>
@@ -48,20 +48,15 @@ function Orders() {
                 key={item.id}
                 className="block"
               >
-                <div className="border border-gray-200 px-4 m cursor-pointer my-2 mt-3 hover:bg-gray-800/10 ">
-                  <div className="flex gap-8">
-                    <div className="">
-                      <p className="text-neutral-600">Name</p>
-                      <p>{item.name}</p>
-                    </div>
-                    <div className="">
-                      <p className="text-neutral-600">Email</p>
-                      <p>{item.email}</p>
-                    </div>
-                    <div className="">
-                      <p className="text-neutral-600">Country</p>
-                      <p>{item.receivingCountry}</p>
-                    </div>
+                <div className="border border-gray-200 px-4 bg-white/50 grid grid-cols-2 gap-8 py-2 cursor-pointer my-1 shadow  hover:bg-gray-800/10 ">
+                  <div className="">
+                    <p className="text-neutral-500">Name</p>
+                    <p>{item.name}</p>
+                  </div>
+
+                  <div className="">
+                    <p className="text-neutral-500">Country</p>
+                    <p>{item.receivingCountry}</p>
                   </div>
                 </div>
               </Link>

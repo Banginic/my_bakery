@@ -8,7 +8,7 @@ function OrderDetails({ params }: { params: Promise<{ orderId: string }> }) {
   const { orderId } = orderParams;
 
   const { data, isLoading, isError } = useOrderQuery(orderId);
-  console.log("Order Data:", data);
+
 
   if (isLoading)
     return (
@@ -83,27 +83,27 @@ function OrderDetails({ params }: { params: Promise<{ orderId: string }> }) {
         </div>
         <div className="flex items-center gap-4">
           <p className="text-neutral-600">Status:</p>
-          <p className="text-green-600">{data?.data[0].status}</p>
+          <p className={`${data?.data[0].status === "Refunding" ? "text-red-500" : "text-green-600"}`}>{data?.data[0].status}</p>
         </div>
         <div className=" bg-green-50 p-4 rounded border border-green-200 mt-4">
           <p className="text-green-600 mb-3">Order location:</p>
            <div>
-            <p className="text-green-800">
+            <div className="text-green-800">
               {
               data?.data[0].locations &&  data?.data[0]?.locations.map((location) => (
-                  <article key={location.place}>
+                  <div key={location.place}>
                     <p>{location.place}</p>
                     <p className="text-xs">{new Date(location.time).toLocaleTimeString()}</p>
                     <div className="min-h-6 border w-1 bg-gray-700 rounded"></div>
             
-                  </article>
+                  </div>
                 ))
                  
               }
-            </p>
+            </div>
            </div>
         </div>
-        <OrderDetailsCTA orderId={orderId} />
+        <OrderDetailsCTA orderId={orderId} status={data?.data[0].status} />
 
         <EditOrder orderId={orderId} />
       </section>

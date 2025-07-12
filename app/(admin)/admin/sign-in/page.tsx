@@ -40,10 +40,10 @@ function Login() {
   }
 
   return (
-    <div className="bg-gradient-to-b from-yellow-50 to-gray-50 min-h-screen grid place-items-center">
+    <div className="bg-gradient-to-b from-yellow-50 to-gray-50 min-h-screen grid place-items-cente">
       <form
         onSubmit={handleSubmit}
-        className="border border-gray-300 w-sm px-4 py-8  rounded shadow"
+        className="border border-gray-300 min-w-[350px] px-4 py-8 h-100 mt-24 mx-auto rounded shadow"
       >
         <h1 className="text-xl lg:text-2xl text-center mb-8 font-bold">
           Login
